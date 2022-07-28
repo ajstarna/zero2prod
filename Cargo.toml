@@ -24,6 +24,11 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 openssl = { version = "0.10", features = ["vendored"] } # not from book, but trying to get running on new OS
 uuid = { version = "1", features = ["v4"] }
 chrono = "0.4.15"
+env_logger = "0.9.0"
+log = "0.4.17"
+tracing = {version = "0.1", features = ["log"]}
+secrecy = { version = "0.8", features = ["serde"] }
+tracing-actix-web = "0.6.0"
 
 # Using table-like toml syntax to avoid a super-long line!
 [dependencies.sqlx]

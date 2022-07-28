@@ -2,8 +2,9 @@ use reqwest;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::TcpListener;
 use uuid::Uuid;
-use zero2prod;
+use zero2prod::startup;
 use zero2prod::configuration::{get_configuration, DatabaseSettings};
+use secrecy::ExposeSecret;
 
 pub struct TestApp {
     pub address: String,
@@ -23,7 +24,7 @@ async fn spawn_app() -> TestApp {
     let connection_pool = configure_database(&configuration.database).await;
 
     let server =
-        zero2prod::startup::run(listener, connection_pool.clone()).expect("failed to bind address");
+        startup::run(listener, connection_pool.clone()).expect("failed to bind address");
     // Launch the server as a background task
     // tokio::spawn returns a handle to the spawned future,
     // but we have no use for it here, hence the non-binding let
@@ -36,7 +37,7 @@ async fn spawn_app() -> TestApp {
 
 pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
     // Create database
-    let mut connection = PgConnection::connect(&config.connection_string_without_db())
+    let mut connection = PgConnection::connect(&config.connection_string_without_db().expose_secret())
         .await
         .expect("Failed to connect to Postgres");
     connection
@@ -45,7 +46,7 @@ pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
         .expect("Failed to create database.");
 
     // Migrate database
-    let connection_pool = PgPool::connect(&config.connection_string())
+    let connection_pool = PgPool::connect(&config.connection_string().expose_secret())
         .await
         .expect("Failed to connect to Postgres.");
 
