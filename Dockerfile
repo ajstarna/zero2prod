@@ -12,9 +12,14 @@ RUN apt update && apt install lld clang -y
 # Copy all files from our working environment to our Docker image
 COPY . .
 
+# this will read from the prepared sqlx-data.json file instead of needing the DB when building
+# note: we already ran cargo sqlx prepare -- --lib to prepare the json file
+ENV SQLX_OFFLINE true
+
 # Let's build our binary!
 # We'll use the release profile to make it faaaast
 RUN cargo build --release
 
+ENV APP_ENVIRONMENT production
 # When `docker run` is executed, launch the binary!
 ENTRYPOINT ["./target/release/zero2prod"]

@@ -11,11 +11,18 @@ async fn main() -> std::io::Result<()> {
     // We are falling back to printing all logs at info-level or above
     // if the RUST_LOG environment variable has not been set.
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
+    
     let configuration = get_configuration().expect("failed to read configuration.");
-    let connection_pool = PgPool::connect(&configuration.database.connection_string().expose_secret())
-        .await
+
+    // no longer async, given that we don't actually try to connect!
+    let connection_pool = PgPool::connect_lazy(&configuration.database.connection_string().expose_secret())
         .expect("Failed to connect to Postgres.");
-    let address = format!("127.0.0.1:{}", configuration.application_port);
+    
+    let address = format!(
+	"{}:{}",
+	configuration.application.host,	
+	configuration.application.port,
+    );
     let listener = TcpListener::bind(address)?;
     run(listener, connection_pool)?.await
 }
