@@ -27,10 +27,13 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
 
     // detect the running environment
     // default to 'local' if unspecified
+    // parse into an Environment type, since the try_from mandates a proper value
     let environment: Environment = std::env::var("APP_ENVIRONMENT")
         .unwrap_or_else(|_| "local".into())
         .try_into()
         .expect("failed to parse APP_ENVIRONMENT");
+
+    // the file name is the env + .yaml
     let environment_filename = format!("{}.yaml", environment.as_str());
     
     // Initialise our configuration reader
