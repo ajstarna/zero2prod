@@ -7,6 +7,9 @@ use secrecy::ExposeSecret;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+
+    println!("hello!"); // remove this: just testing cargo chef
+    
     // `init` does call `set_logger`, so this is all we need to do.
     // We are falling back to printing all logs at info-level or above
     // if the RUST_LOG environment variable has not been set.
