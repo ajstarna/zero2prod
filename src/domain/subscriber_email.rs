@@ -24,7 +24,7 @@ mod tests {
     use claim::assert_err;
     use fake::faker::internet::en::SafeEmail;
     use fake::Fake; // need trait in scope to call .fake
-    
+
     #[test]
     fn empty_string_is_rejected() {
         let email = "".to_string();
@@ -44,14 +44,12 @@ mod tests {
     // Both `Clone` and `Debug` are required by `quickcheck`
     #[derive(Debug, Clone)]
     struct ValidEmailFixture(pub String);
-    
+
     impl quickcheck::Arbitrary for ValidEmailFixture {
         fn arbitrary<G: quickcheck::Gen>(g: &mut G) -> Self {
             let email = SafeEmail().fake_with_rng(g);
             Self(email)
         }
-
-	
     }
     #[quickcheck_macros::quickcheck]
     fn valid_emails_are_parsed_successfully(valid_email: ValidEmailFixture) -> bool {
