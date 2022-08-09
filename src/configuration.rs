@@ -89,22 +89,22 @@ impl TryFrom<String> for Environment {
 impl DatabaseSettings {
     pub fn with_db(&self) -> PgConnectOptions {
         let mut options = self.without_db().database(&self.database_name);
-	options.log_statements(tracing::log::LevelFilter::Trace);
-	options
+        options.log_statements(tracing::log::LevelFilter::Trace);
+        options
     }
 
     pub fn without_db(&self) -> PgConnectOptions {
-	let ssl_mode = if self.require_ssl {
-	    PgSslMode::Require
-	} else {
-	    // try and encrypted connection, fall back to unencrypted if it fails
-	    PgSslMode::Prefer
-	};
-	
+        let ssl_mode = if self.require_ssl {
+            PgSslMode::Require
+        } else {
+            // try and encrypted connection, fall back to unencrypted if it fails
+            PgSslMode::Prefer
+        };
+
         PgConnectOptions::new()
             .host(&self.host)
             .username(&self.username)
-            .password(&self.password.expose_secret())
+            .password(self.password.expose_secret())
             .port(self.port)
             .ssl_mode(ssl_mode)
     }

@@ -30,6 +30,12 @@ tracing = {version = "0.1", features = ["log"]}
 secrecy = { version = "0.8", features = ["serde"] }
 tracing-actix-web = "0.6.0"
 serde-aux = "3.1.0"
+unicode-segmentation = "1.9.0"
+claim = "0.5.0"
+validator = "0.16.0"
+fake = "~2.3"
+quickcheck = "0.9.2"
+quickcheck_macros = "0.9.1"
 
 # Using table-like toml syntax to avoid a super-long line!
 [dependencies.sqlx]
